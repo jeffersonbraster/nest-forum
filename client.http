@@ -28,3 +28,8 @@ Content-Type: application/json
 POST {{baseUrl}}/question
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
+{
+  "title": "Nova pergunta",
+  "content": "Qual a sua cor favorita?"
+}
