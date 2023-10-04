@@ -1,6 +1,6 @@
 // Failure
 export class Left<L, R> {
-  readonly value: unknown
+  readonly value: L
 
   constructor(value: L) {
     this.value = value
@@ -17,7 +17,7 @@ export class Left<L, R> {
 
 // Success
 export class Right<L, R> {
-  readonly value: unknown
+  readonly value: R
 
   constructor(value: R) {
     this.value = value
@@ -34,10 +34,10 @@ export class Right<L, R> {
 
 export type Either<L, R> = Left<L, R> | Right<L, R>
 
-export const left = <L, R>(value: unknown): Either<L, R> => {
+export const left = <L, R>(value: L): Either<L, R> => {
   return new Left(value)
 }
 
-export const right = <L, R>(value: unknown): Either<L, R> => {
+export const right = <L, R>(value: R): Either<L, R> => {
   return new Right(value)
 }
