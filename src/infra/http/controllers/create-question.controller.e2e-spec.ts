@@ -1,11 +1,11 @@
-import { AppModule } from '@/app.module'
-import { PrismaService } from '@/prisma/prisma.service'
+import { AppModule } from '@/infra/app.module'
+import { PrismaService } from '@/infra/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 
-describe('Fetch recent questions (E2E)', () => {
+describe('Create questions (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
@@ -23,7 +23,7 @@ describe('Fetch recent questions (E2E)', () => {
     await app.init()
   })
 
-  test('[GET] /question', async () => {
+  test('[POST] /question', async () => {
     const user = await prisma.user.create({
       data: {
         name: 'Test',
@@ -34,39 +34,21 @@ describe('Fetch recent questions (E2E)', () => {
 
     const accessToken = jwt.sign({ sub: user.id })
 
-    await prisma.question.createMany({
-      data: [
-        {
-          title: 'Test title',
-          content: 'Test content',
-          slug: '12345678',
-          authorId: user.id,
-        },
-        {
-          title: 'Test title 2',
-          content: 'Test content 2',
-          slug: '123456789',
-          authorId: user.id,
-        },
-      ],
-    })
-
     const response = await request(app.getHttpServer())
       .post('/question')
       .set('Authorization', `Bearer ${accessToken}`)
-      .send()
+      .send({
+        title: 'Test title',
+        content: 'Test content',
+        slug: '12345678',
+      })
 
-    expect(response.status).toBe(200)
+    expect(response.status).toBe(201)
 
-    expect(response.body).toEqual({
-      questions: [
-        expect.objectContaining({
-          title: 'Test title',
-        }),
-        expect.objectContaining({
-          title: 'Test title 2',
-        }),
-      ],
+    const questionOnDatabase = await prisma.question.findFirst({
+      where: { title: 'Test title' },
     })
+
+    expect(questionOnDatabase).toBeTruthy()
   })
 })
