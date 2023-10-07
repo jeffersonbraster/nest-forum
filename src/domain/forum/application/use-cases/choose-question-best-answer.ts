@@ -1,4 +1,4 @@
-import { AnswerRepository } from '../repositories/asnwer-repository'
+import { AnswerRepository } from '../repositories/answer-repository'
 import { Question } from '../../enterprise/entities/question'
 import { QuestionsRepository } from '../repositories/questions-repository'
 import { Either, left, right } from '@/core/either'
