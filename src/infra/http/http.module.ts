@@ -9,6 +9,8 @@ import { FetchRecentQuestionsUseCase } from '@/domain/forum/application/use-case
 import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases/authenticate-student'
 import { RegisterStudentUseCase } from '@/domain/forum/application/use-cases/register-student'
 import { CryptographyModule } from '../cryptography/cryptography.module'
+import { APP_GUARD } from '@nestjs/core'
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -19,6 +21,10 @@ import { CryptographyModule } from '../cryptography/cryptography.module'
     FetchRecentQuestionsController,
   ],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
     CreateQuestionUseCase,
     FetchRecentQuestionsUseCase,
     AuthenticateStudentUseCase,
