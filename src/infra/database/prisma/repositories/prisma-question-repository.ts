@@ -20,11 +20,15 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
   }
 
   async findBySlug(slug: string): Promise<Question | null> {
-    const question = await this.prisma.question.findUniqueOrThrow({
+    const question = await this.prisma.question.findUnique({
       where: {
         slug,
       },
     })
+
+    if (!question) {
+      return null
+    }
 
     return PrismaQuestionMapper.toDomain(question)
   }
